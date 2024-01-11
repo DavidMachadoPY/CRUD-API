@@ -3,7 +3,7 @@ root.classList.add("p-4")
 
 // Columna para el formulario
 let col0 = document.createElement('div');
-col0.classList.add("col-md-4");
+col0.classList.add("col-md-6");
 root.appendChild(col0);
 
 let form = document.createElement('form');
@@ -22,6 +22,7 @@ spaceinput.appendChild(labelName);
 let inputName = document.createElement('input');
 inputName.classList.add("form-control");
 inputName.setAttribute('type', 'text');
+inputName.setAttribute('id', 'name');
 spaceinput.appendChild(inputName);
 
 let labelEmail = document.createElement('label');
@@ -32,16 +33,30 @@ spaceinput.appendChild(labelEmail);
 let inputEmail = document.createElement('input');
 inputEmail.classList.add("form-control");
 inputEmail.setAttribute('type', 'email');
+inputEmail.setAttribute('id', 'email');
 spaceinput.appendChild(inputEmail);
+
+let labelPassword = document.createElement('label');
+labelPassword.classList.add("form-label");
+labelPassword.textContent = "PASSWORD";
+spaceinput.appendChild(labelPassword);
+
+let inputPassword = document.createElement('input');
+inputPassword.classList.add("form-control");
+inputPassword.setAttribute('type', 'text');
+inputPassword.setAttribute('id', 'password');
+spaceinput.appendChild(inputPassword);
 
 let btnCrear = document.createElement('button');
 btnCrear.classList.add("btn", "btn-success");
+btnCrear.setAttribute('type', 'button');
+btnCrear.setAttribute('onclick', 'update()');
 btnCrear.innerText = "CREAR O ACTUALIZAR";
 form.appendChild(btnCrear);
 
 // Columna para la tabla
 let col = document.createElement('div');
-col.classList.add("col-md-8");
+col.classList.add("col-md-6");
 root.appendChild(col);
 
 let tabla = document.createElement('table');
@@ -59,7 +74,7 @@ thead.appendChild(trheader);
 tabla.appendChild(thead);
 
 fetch("https://memin.io/public/api/users")
-    .then(response => response.json())
+    .then(response => response.json(), )
     .then(data => {
         let tbody = document.createElement('tbody');
         data.forEach((element) => {
@@ -78,7 +93,7 @@ fetch("https://memin.io/public/api/users")
             trbody.appendChild(tdEmail);
 
             let tdPassword = document.createElement('td');
-            tdPassword.innerText = '******'; // Aquí puedes personalizar cómo se muestra la contraseña.
+            tdPassword.innerText = element.password; 
             trbody.appendChild(tdPassword);
 
             let tdAcciones = document.createElement('td');
@@ -87,23 +102,32 @@ fetch("https://memin.io/public/api/users")
             btnEliminar.classList.add("btn", "btn-danger");
             btnEliminar.innerText = "Eliminar";
             btnEliminar.addEventListener('click', function() {
-                Eliminar(element.id, element.name, element.password); // Llamada a la función Eliminar con el ID del usuario.
+                Eliminar(element.id); // Llamada a la función Eliminar con el ID del usuario.
             });
             tdAcciones.appendChild(btnEliminar);
 
             let btnActualizar = document.createElement('button');
             btnActualizar.classList.add("btn", "btn-warning");
+            btnActualizar.setAttribute("onclick", "GetDateRow()")
             btnActualizar.innerText = "Actualizar";
+            casa = element.id
+            btnActualizar.addEventListener('click', function () {
+                GetDateRow(element.id, element.name, element.email, element.password)
+            })
             tdAcciones.appendChild(btnActualizar);
 
             let btnDetalles = document.createElement('button');
             btnDetalles.classList.add("btn", "btn-info");
             btnDetalles.innerText = "Ver detalles";
             tdAcciones.appendChild(btnDetalles);
+            
+            
 
             trbody.appendChild(tdAcciones);
             tbody.appendChild(trbody);
+
         });
+        
         tabla.appendChild(tbody);
     })
     .catch(error => {
@@ -112,8 +136,62 @@ fetch("https://memin.io/public/api/users")
 
 
 function Eliminar(Id, name, pass) {
+    console.log(`id: , ${Id}`);
+    fetch("https://memin.io/public/api/users/" + Id, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+    .then(response => {
+        return response.json()
+    })
+    .catch(error => {
+        console.error("Hubo un error al obtener los datos:", error);
+    });
+
+    
     console.log("Eliminar usuario con ID:", Id);
-    console.log("Eliminar usuario con NOMBRE:", name);
-    console.log("Eliminar usuario con PASSWORD:", pass);
 }
 
+function GetDateRow(id, name, email, password) {
+    let inputName = document.getElementById('name');
+    inputName.value = name;
+    let inputEmail = document.getElementById('email');
+    inputEmail.value = email;
+    let inputPassword = document.getElementById('password')
+    inputPassword.value = password;
+    console.log("LISTO PARA MODIFICAR", name, "/n", email, "/n", password);
+    sessionStorage.setItem('ID', id)
+    
+}
+
+function cojeID(id) {
+    console.log(id)
+}
+
+function update() {
+    let idCHange = sessionStorage.getItem('ID')
+    
+    let inputNameA = document.getElementById('name').value;
+    let inputEmailA = document.getElementById('email').value;
+    let inputPasswordA = document.getElementById('password').value;
+    
+    nawDate = {
+        "name": inputNameA,
+        "email": inputEmailA,
+        "password": inputPasswordA
+    }
+    
+    fetch("https://memin.io/public/api/users/" + idCHange, {
+        method: 'PUT',
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body: JSON.stringify(nawDate)
+    })
+   .then(data => {
+       console.log(data.ok);
+   })
+
+}
