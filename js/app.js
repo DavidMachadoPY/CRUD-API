@@ -3,7 +3,7 @@ root.classList.add("p-4")
 
 // Columna para el formulario
 let col0 = document.createElement('div');
-col0.classList.add("col-md-6");
+col0.classList.add("col-md-3");
 root.appendChild(col0);
 
 let form = document.createElement('form');
@@ -56,7 +56,7 @@ form.appendChild(btnCrear);
 
 // Columna para la tabla
 let col = document.createElement('div');
-col.classList.add("col-md-6");
+col.classList.add("col-md-9", "table-responsive");
 root.appendChild(col);
 
 let tabla = document.createElement('table');
@@ -67,6 +67,7 @@ let thead = document.createElement('thead');
 let trheader = document.createElement('tr');
 ["ID", "Nombre", "Email", "Password", "Acciones"].forEach(headerText => {
     let header = document.createElement('th');
+    header.setAttribute('scope', 'col')
     header.innerText = headerText;
     trheader.appendChild(header);
 });
@@ -93,13 +94,13 @@ fetch("https://memin.io/public/api/users")
             trbody.appendChild(tdEmail);
 
             let tdPassword = document.createElement('td');
-            tdPassword.innerText = element.password; 
+            tdPassword.innerText = '********'; 
             trbody.appendChild(tdPassword);
 
             let tdAcciones = document.createElement('td');
 
             let btnEliminar = document.createElement('button');
-            btnEliminar.classList.add("btn", "btn-danger");
+            btnEliminar.classList.add("btn", "btn-danger", "btn-sm");
             btnEliminar.innerText = "Eliminar";
             btnEliminar.addEventListener('click', function() {
                 Eliminar(element.id); // Llamada a la función Eliminar con el ID del usuario.
@@ -107,7 +108,7 @@ fetch("https://memin.io/public/api/users")
             tdAcciones.appendChild(btnEliminar);
 
             let btnActualizar = document.createElement('button');
-            btnActualizar.classList.add("btn", "btn-warning");
+            btnActualizar.classList.add("btn", "btn-warning", "btn-sm");
             btnActualizar.setAttribute("onclick", "GetDateRow()")
             btnActualizar.innerText = "Actualizar";
             casa = element.id
@@ -117,11 +118,9 @@ fetch("https://memin.io/public/api/users")
             tdAcciones.appendChild(btnActualizar);
 
             let btnDetalles = document.createElement('button');
-            btnDetalles.classList.add("btn", "btn-info");
+            btnDetalles.classList.add("btn", "btn-info", "btn-sm");
             btnDetalles.innerText = "Ver detalles";
             tdAcciones.appendChild(btnDetalles);
-            
-            
 
             trbody.appendChild(tdAcciones);
             tbody.appendChild(trbody);
