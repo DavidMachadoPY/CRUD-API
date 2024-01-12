@@ -9,13 +9,10 @@ rowtwo.classList.add("row")
 root.appendChild(rowtwo)
 
 
-// Columna para el formulario
-let col0 = document.createElement('div');
-col0.classList.add("col-md-6");
-rowone.appendChild(col0);
 
+// Formulario
 let form = document.createElement('form');
-form.classList.add("p-5");
+form.classList.add("p-3");
 modalBody.appendChild(form);
 
 let spaceinput = document.createElement('div');
@@ -55,12 +52,13 @@ inputPassword.setAttribute('type', 'text');
 inputPassword.setAttribute('id', 'password');
 spaceinput.appendChild(inputPassword);
 
+let modalFooter = document.querySelector('.modal-footer')
 let btnCrear = document.createElement('button');
 btnCrear.classList.add("btn", "btn-success");
 btnCrear.setAttribute('type', 'button');
 btnCrear.setAttribute('onclick', 'update()');
-btnCrear.innerText = "CREAR O ACTUALIZAR";
-form.appendChild(btnCrear);
+btnCrear.innerText = "ACTUALIZAR";
+modalFooter.appendChild(btnCrear);
 
 // Columna para la tabla
 let col = document.createElement('div');
@@ -116,11 +114,11 @@ fetch("https://memin.io/public/api/users")
             tdAcciones.appendChild(btnEliminar);
 
             let btnActualizar = document.createElement('button');
-            btnActualizar.classList.add("btn", "btn-warning", "btn-sm");
+            btnActualizar.classList.add("btn", "btn-warning", "btn-sm")
+            btnActualizar.setAttribute('data-bs-toggle', 'modal')
+            btnActualizar.setAttribute('data-bs-target', '#exampleModal')
             btnActualizar.setAttribute("onclick", "GetDateRow()")
-            
             btnActualizar.innerText = "Actualizar";
-            casa = element.id
             btnActualizar.addEventListener('click', function () {
                 GetDateRow(element.id, element.name, element.email, element.password)
             })
