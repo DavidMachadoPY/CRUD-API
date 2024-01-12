@@ -3,12 +3,17 @@ root.classList.add("p-4", 'container-fluid',)
 
 let modalBody = document.querySelector('.modal-body')
 let rowone = document.querySelector('.rowone')
-
+rowone.classList.add('d-flex', 'justify-content-center')
 let rowtwo = document.createElement('div')
 rowtwo.classList.add("row")
 root.appendChild(rowtwo)
 
-
+let btCrear = document.createElement('button')
+btCrear.classList.add('btn', 'btn-primary')
+btCrear.setAttribute('data-bs-toggle', 'modal')
+btCrear.setAttribute('data-bs-target', '#exampleModal')
+btCrear.innerHTML = 'CREAR'
+rowone.appendChild(btCrear)
 
 // Formulario
 let form = document.createElement('form');
@@ -57,7 +62,7 @@ let btnCrear = document.createElement('button');
 btnCrear.classList.add("btn", "btn-success");
 btnCrear.setAttribute('type', 'button');
 btnCrear.setAttribute('onclick', 'update()');
-btnCrear.innerText = "ACTUALIZAR";
+btnCrear.innerText = "CREAR O ACTUALIZAR";
 modalFooter.appendChild(btnCrear);
 
 // Columna para la tabla
@@ -172,11 +177,8 @@ function GetDateRow(id, name, email, password) {
     
 }
 
-function cojeID(id) {
-    console.log(id)
-}
-
 function update() {
+
     let idCHange = sessionStorage.getItem('ID')
     
     let inputNameA = document.getElementById('name').value;
@@ -196,8 +198,14 @@ function update() {
         },
         body: JSON.stringify(nawDate)
     })
-   .then(data => {
-       console.log(data.ok);
-   })
+    .then(data => {
+        console.log(data);
+    })
 
+}
+
+function closeLimpiar() {
+    let inputNameA = document.getElementById('name').value = '';
+    let inputEmailA = document.getElementById('email').value = '';
+    let inputPasswordA = document.getElementById('password').value = '';
 }
