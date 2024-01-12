@@ -1,14 +1,22 @@
 var root = document.getElementById("root");
-root.classList.add("p-4")
+root.classList.add("p-4", 'container-fluid',)
+
+let modalBody = document.querySelector('.modal-body')
+let rowone = document.querySelector('.rowone')
+
+let rowtwo = document.createElement('div')
+rowtwo.classList.add("row")
+root.appendChild(rowtwo)
+
 
 // Columna para el formulario
 let col0 = document.createElement('div');
-col0.classList.add("col-md-3");
-root.appendChild(col0);
+col0.classList.add("col-md-6");
+rowone.appendChild(col0);
 
 let form = document.createElement('form');
 form.classList.add("p-5");
-col0.appendChild(form);
+modalBody.appendChild(form);
 
 let spaceinput = document.createElement('div');
 spaceinput.classList.add("mb-3");
@@ -56,8 +64,8 @@ form.appendChild(btnCrear);
 
 // Columna para la tabla
 let col = document.createElement('div');
-col.classList.add("col-md-9", "table-responsive");
-root.appendChild(col);
+col.classList.add("col-md-12", "table-responsive");
+rowtwo.appendChild(col);
 
 let tabla = document.createElement('table');
 tabla.classList.add("table", "table-striped");
@@ -94,7 +102,7 @@ fetch("https://memin.io/public/api/users")
             trbody.appendChild(tdEmail);
 
             let tdPassword = document.createElement('td');
-            tdPassword.innerText = '********'; 
+            tdPassword.innerText = element.password; 
             trbody.appendChild(tdPassword);
 
             let tdAcciones = document.createElement('td');
@@ -110,6 +118,7 @@ fetch("https://memin.io/public/api/users")
             let btnActualizar = document.createElement('button');
             btnActualizar.classList.add("btn", "btn-warning", "btn-sm");
             btnActualizar.setAttribute("onclick", "GetDateRow()")
+            
             btnActualizar.innerText = "Actualizar";
             casa = element.id
             btnActualizar.addEventListener('click', function () {
