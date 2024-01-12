@@ -1,24 +1,59 @@
+
+// Contenedor Principal
 var root = document.getElementById("root");
 root.classList.add("p-4", 'container-fluid',)
+root.style.fontFamily = "Space Grotesk, sans-serif";
 
+// Information del body
 let modalBody = document.querySelector('.modal-body')
+
+// Primera row para el boton y la barra de busqueda
 let rowone = document.querySelector('.rowone')
-rowone.classList.add('d-flex', 'justify-content-center')
+rowone.classList.add('d-flex', 'justify-content-center', 'p-3')
+
+// Segunda row para la tabla
 let rowtwo = document.createElement('div')
 rowtwo.classList.add("row")
 root.appendChild(rowtwo)
 
-let btCrear = document.createElement('button')
-btCrear.classList.add('btn', 'btn-primary')
-btCrear.setAttribute('data-bs-toggle', 'modal')
-btCrear.setAttribute('data-bs-target', '#exampleModal')
-btCrear.innerHTML = 'CREAR'
-rowone.appendChild(btCrear)
+// Columna del boton crear para en la primera row
+let columBtn = document.createElement('div')
+columBtn.classList.add("col-md-2", 'd-flex', 'justify-content-center');
+rowone.appendChild(columBtn);
+
+// Creacion del boton crear
+let btCrear = document.createElement("button");
+btCrear.classList.add("btn", "btn-primary");
+btCrear.setAttribute("data-bs-toggle", "modal");
+btCrear.setAttribute("data-bs-target", "#exampleModal");
+btCrear.addEventListener("click", function () {
+  activarCrear = true;
+});
+btCrear.innerHTML = "CREAR NUEVO USUARIO";
+columBtn.appendChild(btCrear);
+
+// Columna para la la barra de busqueda en la primera columna
+let columSearch = document.createElement("div");
+columSearch.classList.add("col-md-4");
+rowone.appendChild(columSearch);
+
+// Creacion de la barra de busqueda
+let formSearch = document.createElement("form");
+formSearch.classList.add("d-flex");
+formSearch.setAttribute("role", "search");
+columSearch.appendChild(formSearch)
+
+let inputSearch = document.createElement("input");
+inputSearch.classList.add('form-control', 'me-2')
+inputSearch.setAttribute("type", "search");
+inputSearch.setAttribute("placeholder", "Search");
+inputSearch.setAttribute("aria-label", "Search");
+formSearch.appendChild(inputSearch);
+
 
 // Formulario
 let form = document.createElement('form');
 form.classList.add("p-3");
-modalBody.appendChild(form);
 
 let spaceinput = document.createElement('div');
 spaceinput.classList.add("mb-3");
@@ -71,7 +106,7 @@ col.classList.add("col-md-12", "table-responsive");
 rowtwo.appendChild(col);
 
 let tabla = document.createElement('table');
-tabla.classList.add("table", "table-striped");
+tabla.classList.add("table", "table-striped", "table-hover", "table-bordered");
 col.appendChild(tabla);
 
 let thead = document.createElement('thead');
@@ -79,17 +114,21 @@ let trheader = document.createElement('tr');
 ["ID", "Nombre", "Email", "Password", "Acciones"].forEach(headerText => {
     let header = document.createElement('th');
     header.setAttribute('scope', 'col')
+    header.classList.add("text-center")
     header.innerText = headerText;
     trheader.appendChild(header);
 });
 thead.appendChild(trheader);
+thead.classList.add("table-dark")
 tabla.appendChild(thead);
 
-fetch("https://memin.io/public/api/users")
+fetch("https://memin.io/public/api/v2/users")
     .then(response => response.json(), )
     .then(data => {
+        console.log(data)
         let tbody = document.createElement('tbody');
-        data.forEach((element) => {
+        tbody.classList.add("text-center", "table-group-divider")
+        data.data.forEach((element) => {
             let trbody = document.createElement('tr');
             
             let tdId = document.createElement('td');
@@ -117,6 +156,7 @@ fetch("https://memin.io/public/api/users")
                 Eliminar(element.id); // Llamada a la función Eliminar con el ID del usuario.
             });
             tdAcciones.appendChild(btnEliminar);
+            tdAcciones.classList.add("d-flex", "justify-content-around")
 
             let btnActualizar = document.createElement('button');
             btnActualizar.classList.add("btn", "btn-warning", "btn-sm")
@@ -126,6 +166,7 @@ fetch("https://memin.io/public/api/users")
             btnActualizar.innerText = "Actualizar";
             btnActualizar.addEventListener('click', function () {
                 GetDateRow(element.id, element.name, element.email, element.password)
+                activarCrear = false;
             })
             tdAcciones.appendChild(btnActualizar);
 
@@ -133,8 +174,11 @@ fetch("https://memin.io/public/api/users")
             btnDetalles.classList.add("btn", "btn-info", "btn-sm");
             btnDetalles.innerText = "Ver detalles";
             tdAcciones.appendChild(btnDetalles);
-
             trbody.appendChild(tdAcciones);
+            btnDetalles.addEventListener("click", function () {
+              showdates(element.id, element.name, element.email, element.password );
+              activarCrear = false;
+            });
             tbody.appendChild(trbody);
 
         });
@@ -146,9 +190,8 @@ fetch("https://memin.io/public/api/users")
     });
 
 
-function Eliminar(Id, name, pass) {
-    console.log(`id: , ${Id}`);
-    fetch("https://memin.io/public/api/users/" + Id, {
+function Eliminar(Id) {
+    fetch("https://memin.io/public/api/v2/users/" + Id, {
         method: 'DELETE',
         headers: {
             "Content-Type" : "application/json"
@@ -166,46 +209,64 @@ function Eliminar(Id, name, pass) {
 }
 
 function GetDateRow(id, name, email, password) {
-    let inputName = document.getElementById('name');
-    inputName.value = name;
-    let inputEmail = document.getElementById('email');
-    inputEmail.value = email;
-    let inputPassword = document.getElementById('password')
-    inputPassword.value = password;
-    console.log("LISTO PARA MODIFICAR", name, "/n", email, "/n", password);
-    sessionStorage.setItem('ID', id)
-    
+    modalBody.appendChild(form);
+    let inputName = document.getElementById('name').value = name;
+    let inputEmail = document.getElementById('email').value = email;
+    let inputPassword = document.getElementById('password').value = password;
 }
 
 function update() {
+    modalBody.appendChild(form);
+    let inputNameA = document.getElementById("name").value;
+    let inputEmailA = document.getElementById("email").value;
+    let inputPasswordA = document.getElementById("password").value;
 
-    let idCHange = sessionStorage.getItem('ID')
-    
-    let inputNameA = document.getElementById('name').value;
-    let inputEmailA = document.getElementById('email').value;
-    let inputPasswordA = document.getElementById('password').value;
-    
-    nawDate = {
-        "name": inputNameA,
-        "email": inputEmailA,
-        "password": inputPasswordA
-    }
-    
-    fetch("https://memin.io/public/api/users/" + idCHange, {
-        method: 'PUT',
+    if (activarCrear) {
+      nawDate = {
+        name: inputNameA,
+        email: inputEmailA,
+        password: inputPasswordA,
+      };
+
+      fetch("https://memin.io/public/api/v2/users", {
+        method: "POST",
         headers: {
-            "Content-Type" : "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(nawDate)
-    })
-    .then(data => {
+        body: JSON.stringify(nawDate),
+      }).then((data) => {
         console.log(data);
-    })
+      });
+    } else {
+      let idCHange = sessionStorage.getItem("ID");
+      console.log("OFF");
+      updateUser = {
+        name: inputNameA,
+        email: inputEmailA,
+        password: inputPasswordA,
+      };
 
+      fetch("https://memin.io/public/api/users/" + idCHange, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateUser),
+      }).then((data) => {
+        console.log(data);
+      });
+    }
 }
 
 function closeLimpiar() {
     let inputNameA = document.getElementById('name').value = '';
     let inputEmailA = document.getElementById('email').value = '';
     let inputPasswordA = document.getElementById('password').value = '';
+}
+
+function showdates(id, name, email, password) {
+     
+    let testerTEXT = document.createElement("h1");
+    testerTEXT.textContent = "Ver detalles";
+    modalBody.appendChild(testerTEXT);
 }
