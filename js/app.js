@@ -50,10 +50,10 @@ inputSearch.setAttribute("placeholder", "Search");
 inputSearch.setAttribute("aria-label", "Search");
 formSearch.appendChild(inputSearch);
 
-
 // Formulario
 let form = document.createElement('form');
 form.classList.add("p-3");
+modalBody.appendChild(form);
 
 let spaceinput = document.createElement('div');
 spaceinput.classList.add("mb-3");
@@ -122,13 +122,14 @@ thead.appendChild(trheader);
 thead.classList.add("table-dark")
 tabla.appendChild(thead);
 
-fetch("https://memin.io/public/api/v2/users")
+fetch("https://memin.io/public/api/users")
     .then(response => response.json(), )
     .then(data => {
         console.log(data)
         let tbody = document.createElement('tbody');
         tbody.classList.add("text-center", "table-group-divider")
-        data.data.forEach((element) => {
+      data.forEach((element) => {
+          
             let trbody = document.createElement('tr');
             
             let tdId = document.createElement('td');
@@ -172,6 +173,8 @@ fetch("https://memin.io/public/api/v2/users")
 
             let btnDetalles = document.createElement('button');
             btnDetalles.classList.add("btn", "btn-info", "btn-sm");
+            btnDetalles.setAttribute("data-bs-toggle", "modal");
+            btnDetalles.setAttribute("data-bs-target", "#exampleModal2");
             btnDetalles.innerText = "Ver detalles";
             tdAcciones.appendChild(btnDetalles);
             trbody.appendChild(tdAcciones);
@@ -179,6 +182,8 @@ fetch("https://memin.io/public/api/v2/users")
               showdates(element.id, element.name, element.email, element.password );
               activarCrear = false;
             });
+            
+            
             tbody.appendChild(trbody);
 
         });
@@ -191,7 +196,7 @@ fetch("https://memin.io/public/api/v2/users")
 
 
 function Eliminar(Id) {
-    fetch("https://memin.io/public/api/v2/users/" + Id, {
+    fetch("https://memin.io/public/api/users/" + Id, {
         method: 'DELETE',
         headers: {
             "Content-Type" : "application/json"
@@ -209,14 +214,15 @@ function Eliminar(Id) {
 }
 
 function GetDateRow(id, name, email, password) {
-    modalBody.appendChild(form);
     let inputName = document.getElementById('name').value = name;
     let inputEmail = document.getElementById('email').value = email;
     let inputPassword = document.getElementById('password').value = password;
+    sessionStorage.setItem('ID', id)
 }
 
 function update() {
-    modalBody.appendChild(form);
+
+    
     let inputNameA = document.getElementById("name").value;
     let inputEmailA = document.getElementById("email").value;
     let inputPasswordA = document.getElementById("password").value;
@@ -228,7 +234,7 @@ function update() {
         password: inputPasswordA,
       };
 
-      fetch("https://memin.io/public/api/v2/users", {
+      fetch("https://memin.io/public/api/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -239,6 +245,7 @@ function update() {
       });
     } else {
       let idCHange = sessionStorage.getItem("ID");
+  
       console.log("OFF");
       updateUser = {
         name: inputNameA,
@@ -265,8 +272,7 @@ function closeLimpiar() {
 }
 
 function showdates(id, name, email, password) {
-     
-    let testerTEXT = document.createElement("h1");
-    testerTEXT.textContent = "Ver detalles";
-    modalBody.appendChild(testerTEXT);
+  let showDetails = document.querySelector('.modal-body2')
+  
+
 }
