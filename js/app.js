@@ -39,16 +39,52 @@ rowone.appendChild(columSearch);
 
 // Creacion de la barra de busqueda
 let formSearch = document.createElement("form");
-formSearch.classList.add("d-flex");
+formSearch.classList.add("d-flex", "flex-column");
 formSearch.setAttribute("role", "search");
 columSearch.appendChild(formSearch)
 
 let inputSearch = document.createElement("input");
 inputSearch.classList.add('form-control', 'me-2')
 inputSearch.setAttribute("type", "search");
+
 inputSearch.setAttribute("placeholder", "Search");
 inputSearch.setAttribute("aria-label", "Search");
 formSearch.appendChild(inputSearch);
+
+let olContentList = document.createElement('ol')
+olContentList.classList.add('list-group')
+olContentList.setAttribute('id', 'users')
+olContentList.style.position = 'absolute'
+olContentList.style.top = '55px'
+olContentList.style.background = 'gray'
+olContentList.style.with = '100%'
+
+
+inputSearch.onkeyup = (e) => {
+  let userData = e.target.value
+  let ilContentList = document.createElement('li')
+  ilContentList.classList.add('list-group-item', 'list-group-item-dark')
+    
+  fetch("https://memin.io/public/api/v2/users/search/" + userData)
+    .then(response => response.json(), )
+    .then(data => { 
+      data.forEach((element) => { 
+        if (userData.length != 1) {
+          console.log(userData.length, 'USER');
+          console.log('LLENO', userData);
+          console.log(inputSearch.value)
+          formSearch.appendChild(olContentList)
+          olContentList.appendChild(ilContentList)
+          ilContentList.textContent = element.name
+        } else {
+          console.log('VACIO', userData);
+          formSearch.removeChild(olContentList)
+  
+          ilContentList.textContent = ' '
+        }
+      })
+    }) 
+}
 
 // Formulario
 let form = document.createElement('form');
@@ -273,6 +309,6 @@ function closeLimpiar() {
 
 function showdates(id, name, email, password) {
   let showDetails = document.querySelector('.modal-body2')
-  
+
 
 }
