@@ -57,35 +57,35 @@ olContentList.setAttribute('id', 'users')
 olContentList.style.position = 'absolute'
 olContentList.style.top = '55px'
 olContentList.style.background = 'gray'
-olContentList.style.with = '100%'
+olContentList.style.with = '500px'
 
 
 inputSearch.onkeyup = (e) => {
   let userData = e.target.value
-  let ilContentList = document.createElement('li')
-  ilContentList.classList.add('list-group-item', 'list-group-item-dark')
-    
+  olContentList.textContent = '';
+
+if (userData.length > 1) {
   fetch("https://memin.io/public/api/v2/users/search/" + userData)
     .then(response => response.json(), )
     .then(data => { 
       data.forEach((element) => { 
-        if (userData.length != 1) {
-          console.log(userData.length, 'USER');
-          console.log('LLENO', userData);
-          console.log(inputSearch.value)
-          formSearch.appendChild(olContentList)
-          olContentList.appendChild(ilContentList)
-          ilContentList.textContent = element.name
-        } else {
-          console.log('VACIO', userData);
-          formSearch.removeChild(olContentList)
-  
-          ilContentList.textContent = ' '
-        }
-      })
-    }) 
-}
+        let ilContentList = document.createElement('li')
+        ilContentList.classList.add('list-group-item', 'list-group-item-dark')
+        ilContentList.textContent = element.name
+        olContentList.appendChild(ilContentList)
+        formSearch.appendChild(olContentList);
+      });
+    })
+    .catch(error => {
+      console.error('ERROR', error)
+    });
+          
+  } else {
+    formSearch.removeChild(olContentList)
+  }
 
+};
+    
 // Formulario
 let form = document.createElement('form');
 form.classList.add("p-3");
@@ -157,79 +157,75 @@ let trheader = document.createElement('tr');
 thead.appendChild(trheader);
 thead.classList.add("table-dark")
 tabla.appendChild(thead);
-
-fetch("https://memin.io/public/api/users")
+generateTable()
+function generateTable() {
+  fetch("https://memin.io/public/api/users")
     .then(response => response.json(), )
     .then(data => {
-        console.log(data)
         let tbody = document.createElement('tbody');
-        tbody.classList.add("text-center", "table-group-divider")
-      data.forEach((element) => {
-          
-            let trbody = document.createElement('tr');
+        tbody.classList.add("tbody", "text-center", "table-group-divider")
+        data.forEach((element) => {
             
-            let tdId = document.createElement('td');
-            tdId.innerText = element.id;
-            trbody.appendChild(tdId);
+              let trbody = document.createElement('tr');
+              
+              let tdId = document.createElement('td');
+              tdId.innerText = element.id;
+              trbody.appendChild(tdId);
 
-            let tdNombre = document.createElement('td');
-            tdNombre.innerText = element.name;
-            trbody.appendChild(tdNombre);
+              let tdNombre = document.createElement('td');
+              tdNombre.innerText = element.name;
+              trbody.appendChild(tdNombre);
 
-            let tdEmail = document.createElement('td');
-            tdEmail.innerText = element.email;
-            trbody.appendChild(tdEmail);
+              let tdEmail = document.createElement('td');
+              tdEmail.innerText = element.email;
+              trbody.appendChild(tdEmail);
 
-            let tdPassword = document.createElement('td');
-            tdPassword.innerText = element.password; 
-            trbody.appendChild(tdPassword);
+              let tdPassword = document.createElement('td');
+              tdPassword.innerText = element.password; 
+              trbody.appendChild(tdPassword);
 
-            let tdAcciones = document.createElement('td');
+              let tdAcciones = document.createElement('td');
 
-            let btnEliminar = document.createElement('button');
-            btnEliminar.classList.add("btn", "btn-danger", "btn-sm");
-            btnEliminar.innerText = "Eliminar";
-            btnEliminar.addEventListener('click', function() {
-                Eliminar(element.id); // Llamada a la función Eliminar con el ID del usuario.
-            });
-            tdAcciones.appendChild(btnEliminar);
-            tdAcciones.classList.add("d-flex", "justify-content-around")
+              let btnEliminar = document.createElement('button');
+              btnEliminar.classList.add("btn", "btn-danger", "btn-sm");
+              btnEliminar.innerText = "Eliminar";
+              btnEliminar.addEventListener('click', function() {
+                  Eliminar(element.id); // Llamada a la función Eliminar con el ID del usuario.
+              });
+              tdAcciones.appendChild(btnEliminar);
+              tdAcciones.classList.add("d-flex", "justify-content-around")
 
-            let btnActualizar = document.createElement('button');
-            btnActualizar.classList.add("btn", "btn-warning", "btn-sm")
-            btnActualizar.setAttribute('data-bs-toggle', 'modal')
-            btnActualizar.setAttribute('data-bs-target', '#exampleModal')
-            btnActualizar.setAttribute("onclick", "GetDateRow()")
-            btnActualizar.innerText = "Actualizar";
-            btnActualizar.addEventListener('click', function () {
-                GetDateRow(element.id, element.name, element.email, element.password)
+              let btnActualizar = document.createElement('button');
+              btnActualizar.classList.add("btn", "btn-warning", "btn-sm")
+              btnActualizar.setAttribute('data-bs-toggle', 'modal')
+              btnActualizar.setAttribute('data-bs-target', '#exampleModal')
+              btnActualizar.setAttribute("onclick", "GetDateRow()")
+              btnActualizar.innerText = "Actualizar";
+              btnActualizar.addEventListener('click', function () {
+                  GetDateRow(element.id, element.name, element.email, element.password)
+                  activarCrear = false;
+              })
+              tdAcciones.appendChild(btnActualizar);
+
+              let btnDetalles = document.createElement('button');
+              btnDetalles.classList.add("btn", "btn-info", "btn-sm");
+              btnDetalles.setAttribute("data-bs-toggle", "modal");
+              btnDetalles.setAttribute("data-bs-target", "#exampleModal2");
+              btnDetalles.innerText = "Ver detalles";
+              tdAcciones.appendChild(btnDetalles);
+              trbody.appendChild(tdAcciones);
+              btnDetalles.addEventListener("click", function () {
+                showdates(element.id, element.name, element.email, element.password );
                 activarCrear = false;
-            })
-            tdAcciones.appendChild(btnActualizar);
-
-            let btnDetalles = document.createElement('button');
-            btnDetalles.classList.add("btn", "btn-info", "btn-sm");
-            btnDetalles.setAttribute("data-bs-toggle", "modal");
-            btnDetalles.setAttribute("data-bs-target", "#exampleModal2");
-            btnDetalles.innerText = "Ver detalles";
-            tdAcciones.appendChild(btnDetalles);
-            trbody.appendChild(tdAcciones);
-            btnDetalles.addEventListener("click", function () {
-              showdates(element.id, element.name, element.email, element.password );
-              activarCrear = false;
-            });
-            
-            
-            tbody.appendChild(trbody);
-
-        });
-        
-        tabla.appendChild(tbody);
+              });
+              tbody.appendChild(trbody);
+        }); 
+      tabla.appendChild(tbody);
     })
-    .catch(error => {
-        console.error("Hubo un error al obtener los datos:", error);
-    });
-
+  .catch(error => {
+      console.error("Hubo un error al obtener los datos:", error);
+  });
+}
 
 function Eliminar(Id) {
     fetch("https://memin.io/public/api/users/" + Id, {
@@ -238,8 +234,11 @@ function Eliminar(Id) {
             "Content-Type" : "application/json"
         }
     })
-    .then(response => {
-        return response.json()
+    .then(response => response.json())
+    .then(data => {
+      let tbody = document.querySelector('.tbody');
+      tbody.innerHTML = ''
+      generateTable()
     })
     .catch(error => {
         console.error("Hubo un error al obtener los datos:", error);
@@ -276,9 +275,11 @@ function update() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(nawDate),
-      }).then((data) => {
-        console.log(data);
-      });
+      }).then(data => {
+        let tbody = document.querySelector('.tbody');
+        tbody.innerHTML = ''
+        generateTable()
+      })
     } else {
       let idCHange = sessionStorage.getItem("ID");
   
@@ -295,9 +296,11 @@ function update() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updateUser),
-      }).then((data) => {
-        console.log(data);
-      });
+      }).then(data => {
+        let tbody = document.querySelector('.tbody');
+        tbody.innerHTML = ''
+        generateTable()
+      })
     }
 }
 
