@@ -69,11 +69,17 @@ if (userData.length > 1) {
     .then(response => response.json(), )
     .then(data => { 
       data.forEach((element) => { 
-        let ilContentList = document.createElement('li')
+        let ilContentList = document.createElement('button')
+        ilContentList.setAttribute('type', 'button')
         ilContentList.classList.add('list-group-item', 'list-group-item-dark')
         ilContentList.textContent = element.name
         olContentList.appendChild(ilContentList)
         formSearch.appendChild(olContentList);
+        
+        ilContentList.addEventListener('click', function () {
+          verquepresiono(element.name, element.id);
+        })
+
       });
     })
     .catch(error => {
@@ -85,6 +91,10 @@ if (userData.length > 1) {
   }
 
 };
+
+function verquepresiono(name, id){
+  console.log(`SE PRESIONO EL BOTON DE ${name} CON ID ${id}`);
+}
     
 // Formulario
 let form = document.createElement('form');
@@ -157,7 +167,7 @@ let trheader = document.createElement('tr');
 thead.appendChild(trheader);
 thead.classList.add("table-dark")
 tabla.appendChild(thead);
-generateTable()
+
 function generateTable() {
   fetch("https://memin.io/public/api/users")
     .then(response => response.json(), )
@@ -238,13 +248,11 @@ function Eliminar(Id) {
     .then(data => {
       let tbody = document.querySelector('.tbody');
       tbody.innerHTML = ''
-      generateTable()
     })
     .catch(error => {
         console.error("Hubo un error al obtener los datos:", error);
     });
 
-    
     console.log("Eliminar usuario con ID:", Id);
 }
 
@@ -256,8 +264,6 @@ function GetDateRow(id, name, email, password) {
 }
 
 function update() {
-
-    
     let inputNameA = document.getElementById("name").value;
     let inputEmailA = document.getElementById("email").value;
     let inputPasswordA = document.getElementById("password").value;
@@ -313,5 +319,6 @@ function closeLimpiar() {
 function showdates(id, name, email, password) {
   let showDetails = document.querySelector('.modal-body2')
 
-
 }
+
+generateTable();
